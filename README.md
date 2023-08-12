@@ -1,2 +1,8 @@
 # R-OBJ
-Red's Object Format (ROBJ) and Red's Motion Object Format (R-MOBJ. This Project is just a converter and object loader for the formats with the intention of providing a smaller, faster version usable for my size projects
+Red's Object Format (ROBJ) and Red's Motion Object Format (R-MOBJ); a smaller, faster version of the OBJ format.
+Currently made for my small projects, but may end up being more.
+
+This repository is intended to include:
+- [ ] A Compressor
+- [ ] A, Object Loader
+- [ ] Tests running animations
