@@ -3,6 +3,6 @@ Red's Object Format (ROBJ) and Red's Motion Object Format (R-MOBJ); a smaller, f
 Currently made for my small projects, but may end up being more.
 
 This repository is intended to include:
-- [ ] A Compressor
-- [ ] A, Object Loader
-- [ ] Tests running animations
+- [ ] A Compressor CLI
+- [ ] A Single Object Loader Header/File
+- [ ] Tests Running animations for R-MOBJ format
