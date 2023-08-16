@@ -1,0 +1,15 @@
+https://stackoverflow.com/questions/3026441/float32-to-float16
+https://en.wikipedia.org/wiki/Half-precision_floating-point_format
+https://people.computing.clemson.edu/~dhouse/courses/405/docs/brief-obj-file-format.pdf
+https://en.wikipedia.org/wiki/Minifloat
+https://stackoverflow.com/questions/18691199/floating-point-conversion-for-8-bit-floating-point-numbers
+https://blog.demofox.org/2017/11/21/floating-point-precision/
+
+
+https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwilyK-V6ZL9AhW-FFkFHUDnDjsQFnoECAkQAw&url=https%3A%2F%2Fgcc.gnu.org%2Fonlinedocs%2Fgcc%2Fx86-Options.html%23%3A~%3Atext%3DUsing%2520%252Dmarch%253Dnative%2520enables%2520all%2Cof%2520the%2520selected%2520instruction%2520set.%26text%3DA%2520generic%2520CPU%2520with%252064%252Dbit%2520extensions.&usg=AOvVaw0l4i8eNUP96nt7cUzs6Okl
+https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiV75ik6ZL9AhUIEFkFHf7nCOwQFnoECAMQAw&url=https%3A%2F%2Fdeveloper.arm.com%2Fdocumentation%2F100748%2F0612%2Fusing-common-compiler-options%2Fselecting-optimization-options%23%3A~%3Atext%3D%252DO3%2520is%2520a%2520higher%2520optimization%2Cfor%2520optimizations%2520compared%2520to%2520%252DO2%2520.&usg=AOvVaw3AMw9SfDwe2Td97ILnMtCc
+https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwilyK-V6ZL9AhW-FFkFHUDnDjsQFnoECAkQAw&url=https%3A%2F%2Fgcc.gnu.org%2Fonlinedocs%2Fgcc%2Fx86-Options.html%23%3A~%3Atext%3DUsing%2520%252Dmarch%253Dnative%2520enables%2520all%2Cof%2520the%2520selected%2520instruction%2520set.%26text%3DA%2520generic%2520CPU%2520with%252064%252Dbit%2520extensions.&usg=AOvVaw0l4i8eNUP96nt7cUzs6Okl
+https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwilyK-V6ZL9AhW-FFkFHUDnDjsQFnoECAsQAw&url=https%3A%2F%2Flearn.microsoft.com%2Fen-us%2Fcpp%2Fbuild%2Freference%2Fo-options-optimize-code%23%3A~%3Atext%3DThe%2520%252FO%2520options%2520control%2520various%2Coptimizes%2520code%2520for%2520maximum%2520speed.&usg=AOvVaw18G4pvTFqT5_471NLdgD1p
+https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwilyK-V6ZL9AhW-FFkFHUDnDjsQFnoECAgQAw&url=https%3A%2F%2Fstackoverflow.com%2Fquestions%2F19689014%2Fgcc-difference-between-o3-and-os%23%3A~%3Atext%3D%252DO3%2520is%2520for%2520getting%2520a%2Cnot%2520enabled%2520even%2520at%2520%252DO3%2520.&usg=AOvVaw3hIpHXJ3JZB3lxh84OPxae
+https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwilyK-V6ZL9AhW-FFkFHUDnDjsQFnoECAoQAw&url=https%3A%2F%2Fdeveloper.arm.com%2Fdocumentation%2F100748%2F0612%2Fusing-common-compiler-options%2Fselecting-optimization-options%23%3A~%3Atext%3D%252DO3%2520is%2520a%2520higher%2520optimization%2Cfor%2520optimizations%2520compared%2520to%2520%252DO2%2520.&usg=AOvVaw3AMw9SfDwe2Td97ILnMtCc
+https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiBzcKP6pL9AhVNEGIAHag6CEkQFnoECA8QAw&url=https%3A%2F%2Fdocumentation.suse.com%2Fsbp%2Fall%2Fpdf%2FSBP-GCC-10_color_en.pdf&usg=AOvVaw2hitpmxJ5lxVkuvVmfLxCy
