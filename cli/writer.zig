@@ -4,7 +4,7 @@ const errors = error{
     Model_Vertex_Overflow,
 };
 
-pub fn read(in: std.fs.File, out: std.fs.File) !void {
+pub fn readObj(in: std.fs.File, out: std.fs.File) !void {
     var br = std.io.bufferedReader(in.reader());
     var in_reader = br.reader();
 
@@ -47,9 +47,12 @@ pub fn read(in: std.fs.File, out: std.fs.File) !void {
             for (map.iterator().next()) |entry| {
                 const tType = if (entry.value_ptr.* <= std.math.maxInt(u8)) u8 // write 1 byte
                 else if (entry.value_ptr.* <= std.math.MaxInt(u16)) u16 //write 2 bytes
+                else if (entry.value_ptr.* <= std.math.MaxInt(u24)) u24 //write 3 bytes
                 else if (entry.value_ptr.* <= std.math.MaxInt(u32)) u32 //write 4 bytes
+                else if (entry.value_ptr.* <= std.math.MaxInt(u40)) u40 //write 5 bytes
+                else if (entry.value_ptr.* <= std.math.MaxInt(u48)) u48 //write 6 bytes
+                else if (entry.value_ptr.* <= std.math.MaxInt(u56)) u56 //write 7 bytes
                 else if (entry.value_ptr.* <= std.math.MaxInt(u64)) u64 //write 8 bytes
-                else if (entry.value_ptr.* <= std.math.MaxInt(u128)) u128 //write 16 bytes
                 else return errors.Model_Vertex_Overflow;
 
                 out.write(std.mem.asBytes(@as(tType, @truncate(entry.value_ptr))));
