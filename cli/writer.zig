@@ -16,12 +16,19 @@ pub fn readObj(in: std.fs.File, out: std.fs.File) !void {
     var map = std.AutoHashMap(f32 || u16, usize).init(gpa.allocator());
     defer gpa.deinit();
 
+    var mode: u8 = 'v';
+    
     while (in_reader.readUntilDelimiterOrEof(stream, '\n')) {
         var split = std.mem.splitScalar(u8, stream, ' ');
-        var mode = split.first();
+        var n_mode = split.first();
+        if (n_mode != mode) {
+            _ = try out.write(n_mode); 
+            _ = try out.write("\n"); 
+            mode = n_mode; 
+        }
 
         for (split.next()) |v| {
-            switch (mode) {
+            switch (n_mode) {
                 'v' => {
                     var f = try std.fmt.parseFloat(f32, v);
                     var entry = try map.getOrPutValue(f, map.count());
@@ -38,9 +45,12 @@ pub fn readObj(in: std.fs.File, out: std.fs.File) !void {
                 },
 
                 else => {
-                    out.write(v);
+                    _ = try out.write(v); // TODO: check if the \n is part of the line or not
                 },
             }
+        }
+        _ = try out.write('\n');
+    }
 
             out.write("<KV>\n"); // Seperator for KV & Data
             // Write KV with V first K second (since the Keys are actually the value in the original one)
@@ -56,6 +66,7 @@ pub fn readObj(in: std.fs.File, out: std.fs.File) !void {
                 else return errors.Model_Vertex_Overflow;
 
                 out.write(std.mem.asBytes(@as(tType, @truncate(entry.value_ptr))));
+                out.write(std.mem.toBytes(entry));
             }
         }
     }
