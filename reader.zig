@@ -4,8 +4,9 @@ var bw = std.io.bufferedWriter(std.io.getStdOut().writer);
 const stdout = bw.writer();
 
 pub fn printRobj(in: std.fs.File) !void {
+    _ = in;
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    var map = std.AutoHashMap(usize, f32 || u16).init(gpa.allocator());
+    var map = std.AutoHashMap(usize, f32 || u16).init(gpa.allocator()); 
     defer gpa.deinit();
 
     var slider: [100000]u8 = undefined;
@@ -26,17 +27,17 @@ pub fn printRobj(in: std.fs.File) !void {
 
     // iterate for every \n & count each one
     var raw_data = kv_ne_data.next();
-    var data_type: u8 = undefined;
+    var data_type: []u8 = undefined;
     var lines = std.mem.splitScalar([]u8, raw_data, '\n'); 
     for (lines) |line| {
-        if (line.len == 1) { // TODO: check if the line includes \n  
-            data_type = line[0];
+        if (line.len == 1) { // TODO: check if the line includes \n when checking length
+            data_type = line;
         } else {
             var vals = std.mem.splitScalar([]u8, line, ' ');
             
             // TODO: Handle in the Abstract-Syntax-Tree
             
-            if ( data_type == 'm' or data_type == 'u' or data_type == 'g') { 
+            if ( data_type[0] == 'm' or data_type[0] == 'u' or data_type[0] == 'g') { 
                 // TODO: Handle in the Abstract-Syntax-Tree
             } else {
             for (vals) |val|{
@@ -54,14 +55,15 @@ pub fn printRobj(in: std.fs.File) !void {
                 _ = map.get( std.mem.bytesToValue( vType, val ) );
 
                 // TODO: Handle in the Abstract-Syntax-Tree
+                swtich(data_type) {
+                    "v" => {},
+                    "vn" => {},
+                    "vt" => {},
+                    else => {},
+                }
             }
             }
         }
 
     }
-    // if the number of \n is greater than the possible size of a int than, you expand the expect amount of bytes by 1 (might also want to add a byte everytime you get oveer the total size)
-    
-
-    // iterate through data with kv
-    
 }
