@@ -1,4 +1,5 @@
 const std = @import("std");
+const types = @import("../loader.zig");
 
 const f32Context = struct {
     pub fn hash(self: f32Context, s: f32) u32 {
@@ -83,7 +84,7 @@ pub fn convert(path: [:0]const u8) !void {
     }
 }
 
-pub fn read(path: [:0]const u8) !void { // TODO: replace void with mesh data type once that's completevar
+pub fn read(path: [:0]const u8, alloc: std.mem.Allocator) !types.mesh { // TODO: replace void with mesh data type once that's completevar
     var in: std.fs.File = std.fs.openFileAbsoluteZ(path, .{});
     var reader = std.io.bufferedReader(in).reader();
     var buffer = std.io.FixedBufferStream(u8);
@@ -97,7 +98,7 @@ pub fn read(path: [:0]const u8) !void { // TODO: replace void with mesh data typ
 
     var count = 2;
     var mode: u8 = 1; // 0 kv, rest are different types of data
-
+    
     // fill map first
     for (reader.streamUntilDelimiter(buffer, 0, null)) |line| {
         if (mode == 1 and line[0] == 0) {
@@ -108,6 +109,8 @@ pub fn read(path: [:0]const u8) !void { // TODO: replace void with mesh data typ
             count += 1;
         }
     }
+
+    var mesh:types.mesh = types.mesh.init(alloc);
 
     // mode used for something else here
     for (reader.streamUntilDelimiter(buffer, '\n', null)) |line| {

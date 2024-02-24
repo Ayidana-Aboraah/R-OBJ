@@ -28,6 +28,10 @@ pub const mesh = struct {
     veticies: std.ArrayList(vertex), // NOTE: may replace with []vertex if necessary
     indicies: std.ArrayList(usize), // NOTE: may replace with []u32 if necessary
     material: material,
+    pub fn init(alloc: std.mem.Allocator) !mesh{
+        return {.veticies = std.ArrayList(vertex).init(alloc);
+        };
+    }
 };
 
 pub fn loadFile() !mesh{
