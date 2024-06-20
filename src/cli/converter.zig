@@ -16,7 +16,7 @@ const f32Context = struct {
 
 fn IntSize(count: usize) type {
     const max = std.math.maxInt;
-    return if (count < max(u8)) u8 else if (count < max(u16)) u16 else if (count < max(u24)) u24 else if (count < max(u32)) u32 else if (count < max(u40)) u40 else if (count < max(u48)) u48 else if (count < max(u56)) u56 else if (count < max(u64)) u64 else u128;
+    return if (count < max(u8)) u8 else if (count < max(u16)) u16 else if (count < max(u24)) u24 else if (count < max(u32)) u32 else if (count < max(u40)) u40 else if (count < max(u48)) u48 else if (count < max(u56)) u56 else u64;
 }
 
 var gpa = std.heap.GeneralPurposeAllocator(.{}){};
@@ -27,7 +27,7 @@ const n = []u8{0}; // null
 const terminator = []u8{ 0, 10 };
 
 // TODO: remember to defer the deinit of the gpa allocator & map
-pub fn initMap(map: std.AutoHashMap(f32, usize), writer: bool) void {
+pub fn initMap(map: std.AutoHashMap, writer: bool) void {
     if (writer) {
         map = std.ArrayHashMap(f32, usize, f32Context, false).init(allocator);
         map.put(0.0, 1);
@@ -39,10 +39,9 @@ pub fn initMap(map: std.AutoHashMap(f32, usize), writer: bool) void {
 
 pub fn writeMap(map: std.AutoHashMap(f32, usize)) !void {
     var out: std.fs.File = try std.fs.createFileAbsoluteZ("kv.rkv", .{});
-    const vals: []f32 = map.keys(); // Since we're using an ArrayHashMap all the keys shold be in order but you never know
-    for (vals) |val| {
+    for (map.keyIterator().next()) |val| {
         out.write(std.mem.toBytes(val));
-        out.write(terminator);
+        out.write(terminator); // This might be a cause for bugs later
     }
 }
 
@@ -74,12 +73,12 @@ pub fn convertOBJ(path: [:0]u8, map: std.AutoHashMap(f32, usize)) !void {
         sectLoop: for (sections.next()) |sect| {
             switch (line[0]) {
                 'v' => {
-                    const res = try map.getOrPut(try std.fmt.parseFloat(f32, sect), map.count() + 1); // TODO: check this out
+                    const idx = try map.getOrPut(try std.fmt.parseFloat(f32, sect), map.count() + 1); // TODO: check this out
 
-                    const count = if (res.found_existing) res.value_ptr.* else map.count();
-                    const ty = IntSize(count);
+                    const vIdx = if (idx.found_existing) idx.value_ptr.* else map.count();
+                    const uType = IntSize(vIdx);
 
-                    out.write(std.mem.toBytes(@as(ty, @truncate(count))));
+                    out.write(std.mem.toBytes(@as(uType, @truncate(vIdx))));
                     out.write(n);
                 },
                 'f' => {
@@ -87,17 +86,18 @@ pub fn convertOBJ(path: [:0]u8, map: std.AutoHashMap(f32, usize)) !void {
 
                     for (indicies.next()) |indice| {
                         const val: usize = std.fmt.parseUnsigned(usize, indice, 10);
-                        const ty = IntSize(val);
+                        const uType = IntSize(val);
 
-                        out.write(std.mem.toBytes(@as(ty, @truncate(val))));
-                        out.write("/");
+                        out.write(std.mem.toBytes(@as(uType, @truncate(val))));
+                        if (indicies.index + 1 != indicies.buffer.len) out.write("/");
                     }
+                    out.write(n);
                 },
                 'l', 'p' => {
                     const val: usize = std.fmt.parseUnsigned(usize, sect, 10);
-                    const ty = IntSize(val);
+                    const uType = IntSize(val);
 
-                    out.write(std.mem.toBytes(@as(ty, @truncate(val))));
+                    out.write(std.mem.toBytes(@as(uType, @truncate(val))));
                     out.write(n);
                 },
                 'u', 'm', 'g' => {
