@@ -6,3 +6,6 @@ This repository is intended to include:
 - [ ] A Compressor CLI
 - [ ] A Single Object Loader Header/File
 - [ ] Tests Running animations for R-MOBJ format
+
+Sources:
+- [Tiny OBJ Loader](https://github.com/tinyobjloader/tinyobjloader?tab=readme-ov-file)
