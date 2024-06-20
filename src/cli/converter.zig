@@ -1,0 +1,135 @@
+const std = @import("std");
+const types = @import("../loader.zig");
+
+const f32Context = struct {
+    pub fn hash(self: f32Context, s: f32) u32 {
+        _ = self;
+        return 0.0 | s;
+    }
+
+    pub fn eql(self: f32Context, a: f32, b: f32, b_index: usize) bool {
+        _ = self;
+        _ = b_index;
+        return a == b;
+    }
+};
+
+fn IntSize(count: usize) type {
+    const max = std.math.maxInt;
+    return if (count < max(u8)) u8 else if (count < max(u16)) u16 else if (count < max(u24)) u24 else if (count < max(u32)) u32 else if (count < max(u40)) u40 else if (count < max(u48)) u48 else if (count < max(u56)) u56 else if (count < max(u64)) u64 else u128;
+}
+
+var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+const allocator = gpa.allocator();
+
+const nl = []u8{10}; // newline
+const n = []u8{0}; // null
+const terminator = []u8{ 0, 10 };
+
+// TODO: remember to defer the deinit of the gpa allocator & map
+pub fn initMap(map: std.AutoHashMap(f32, usize), writer: bool) void {
+    if (writer) {
+        map = std.ArrayHashMap(f32, usize, f32Context, false).init(allocator);
+        map.put(0.0, 1);
+    } else {
+        map = std.AutoHashMap(usize, f32, false).init(allocator);
+        map.put(1, 0.0);
+    }
+}
+
+pub fn writeMap(map: std.AutoHashMap(f32, usize)) !void {
+    var out: std.fs.File = try std.fs.createFileAbsoluteZ("kv.rkv", .{});
+    const vals: []f32 = map.keys(); // Since we're using an ArrayHashMap all the keys shold be in order but you never know
+    for (vals) |val| {
+        out.write(std.mem.toBytes(val));
+        out.write(terminator);
+    }
+}
+
+pub fn fillMap(path: [:0]u8, map: std.AutoHashMap(usize, f32)) void {
+    const in: std.fs.File = std.fs.openFileAbsoluteZ(path, .{});
+    var reader = std.io.bufferedReader(in).reader();
+    const buffer = std.io.FixedBufferStream(u8);
+    var count = 1;
+
+    for (reader.streamUntilDelimiter(buffer, 0, null)) |line| {
+        try map.put(count, try std.fmt.parseFloat(f32, line));
+        count += 1;
+    }
+}
+
+pub fn convertOBJ(path: [:0]u8, map: std.AutoHashMap(f32, usize)) !void {
+    const in: std.fs.File = try std.fs.createFileAbsoluteZ(path, .{});
+    var out: std.fs.File = try std.fs.createFileAbsoluteZ(path + ".robj", .{});
+
+    var reader = std.io.bufferedReader(in).reader();
+    const buffer = std.io.FixedBufferStream(u8);
+
+    // line the whole line
+    // sections are the pieces of the line
+    // indicies are the pieces of a section
+
+    for (reader.streamUntilDelimiter(buffer, '\n', null)) |line| {
+        var sections = std.mem.splitScalar(u8, line, ' ');
+        sectLoop: for (sections.next()) |sect| {
+            switch (line[0]) {
+                'v' => {
+                    const res = try map.getOrPut(try std.fmt.parseFloat(f32, sect), map.count() + 1); // TODO: check this out
+
+                    const count = if (res.found_existing) res.value_ptr.* else map.count();
+                    const ty = IntSize(count);
+
+                    out.write(std.mem.toBytes(@as(ty, @truncate(count))));
+                    out.write(n);
+                },
+                'f' => {
+                    var indicies = std.mem.splitScalar(u8, sect, '/');
+
+                    for (indicies.next()) |indice| {
+                        const val: usize = std.fmt.parseUnsigned(usize, indice, 10);
+                        const ty = IntSize(val);
+
+                        out.write(std.mem.toBytes(@as(ty, @truncate(val))));
+                        out.write("/");
+                    }
+                },
+                'l', 'p' => {
+                    const val: usize = std.fmt.parseUnsigned(usize, sect, 10);
+                    const ty = IntSize(val);
+
+                    out.write(std.mem.toBytes(@as(ty, @truncate(val))));
+                    out.write(n);
+                },
+                'u', 'm', 'g' => {
+                    out.write(line);
+                    break :sectLoop;
+                },
+                '#' => continue :sectLoop,
+            }
+        }
+
+        _ = try out.write(nl);
+    }
+}
+
+// pub fn read(path: [:0]const u8, map: std.AutoHashMap(usize, f32), mesh_alloc: std.mem.Allocator) !types.mesh { // TODO: replace void with mesh data type once that's completevar
+//    const in: std.fs.File = std.fs.openFileAbsoluteZ(path, .{});
+//    var reader = std.io.bufferedReader(in).reader();
+//    const buffer = std.io.FixedBufferStream(u8);
+//
+//
+//     var mesh:types.mesh = types.mesh.init(mesh_alloc);
+//     var mode = 'v';
+//
+//     // mode used for something else here
+//     for (reader.streamUntilDelimiter(buffer, '\n', null)) |line| {
+//         if (line[0] == 0) break;
+//         if (line[line.len - 2] == 0) { // all normal data lines like vertices should end witha  \0\n
+//             switch (mode) {
+//                 'v' => {}, // TODO: Load into a verticies on mesh object
+//                 'f', 'p', 'l' => {}, // TODO: Load into faces, points, or lines on mesh object
+//             }
+//         } else {} // TODO: figure out how to handle materials & groups
+//
+//     }
+// }
