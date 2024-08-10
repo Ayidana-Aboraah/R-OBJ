@@ -43,6 +43,11 @@
         //    // actually used.
         //    .lazy = false,
         //},
+        .cli = .{
+            .url = "git+https://github.com/Hejsil/zig-clap/#f0a281ffe91fb64f116dcb04c34cecef70e8c79c",
+            .hash = "122026b67ce2974e3b2fcfd3e2e164b73ee60c55d13f3f60ca7db6c316c8f22a6bf8",
+            .lazy = false,
+        },
     },
 
     // Specifies the set of files and directories that are included in this package.

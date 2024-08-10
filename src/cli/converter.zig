@@ -1,10 +1,11 @@
 const std = @import("std");
 const types = @import("../loader.zig");
 
-const f32Context = struct {
+pub const f32Context = struct {
     pub fn hash(self: f32Context, s: f32) u32 {
         _ = self;
-        return 0.0 | s;
+
+        return @as(u32, @bitCast(s));
     }
 
     pub fn eql(self: f32Context, a: f32, b: f32, b_index: usize) bool {
@@ -27,14 +28,14 @@ const n = []u8{0}; // null
 const terminator = []u8{ 0, 10 };
 
 // TODO: remember to defer the deinit of the gpa allocator & map
-pub fn initMap(map: std.AutoHashMap, writer: bool) void {
-    if (writer) {
-        map = std.ArrayHashMap(f32, usize, f32Context, false).init(allocator);
-        map.put(0.0, 1);
-    } else {
-        map = std.AutoHashMap(usize, f32, false).init(allocator);
-        map.put(1, 0.0);
-    }
+pub fn initWriteMap(map: *std.ArrayHashMap(f32, usize, f32Context, false)) !void {
+    map.* = std.ArrayHashMap(f32, usize, f32Context, false).init(allocator);
+    try map.put(0.0, 1);
+}
+
+pub fn initReadMap(map: *std.AutoHashMap(usize, f32)) !void {
+    map = std.AutoHashMap(usize, f32, false).init(allocator);
+    try map.put(1, 0.0);
 }
 
 pub fn writeMap(map: std.AutoHashMap(f32, usize)) !void {
@@ -45,7 +46,7 @@ pub fn writeMap(map: std.AutoHashMap(f32, usize)) !void {
     }
 }
 
-pub fn fillMap(path: [:0]u8, map: std.AutoHashMap(usize, f32)) void {
+pub fn fillMap(path: [:0]u8, map: *std.AutoHashMap(usize, f32)) void {
     const in: std.fs.File = std.fs.openFileAbsoluteZ(path, .{});
     var reader = std.io.bufferedReader(in).reader();
     const buffer = std.io.FixedBufferStream(u8);
@@ -57,9 +58,9 @@ pub fn fillMap(path: [:0]u8, map: std.AutoHashMap(usize, f32)) void {
     }
 }
 
-pub fn convertOBJ(path: [:0]u8, map: std.AutoHashMap(f32, usize)) !void {
-    const in: std.fs.File = try std.fs.createFileAbsoluteZ(path, .{});
-    var out: std.fs.File = try std.fs.createFileAbsoluteZ(path + ".robj", .{});
+pub fn convertOBJ(path: [:0]u8, map: *std.ArrayHashMap(f32, usize, f32Context, false)) !void {
+    const in = try std.fs.createFileAbsoluteZ(path, .{}); //TODO: Proper error handling
+    var out = try std.fs.createFileAbsoluteZ("out.robj", .{});
 
     var reader = std.io.bufferedReader(in).reader();
     const buffer = std.io.FixedBufferStream(u8);
