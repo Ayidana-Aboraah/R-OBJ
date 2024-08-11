@@ -16,36 +16,16 @@
     // internet connectivity.
     .dependencies = .{
         // See `zig fetch --save <url>` for a command-line interface for adding dependencies.
-        //.example = .{
-        //    // When updating this field to a new URL, be sure to delete the corresponding
-        //    // `hash`, otherwise you are communicating that you expect to find the old hash at
-        //    // the new URL.
-        //    .url = "https://example.com/foo.tar.gz",
-        //
-        //    // This is computed from the file contents of the directory of files that is
-        //    // obtained after fetching `url` and applying the inclusion rules given by
-        //    // `paths`.
         //    //
         //    // This field is the source of truth; packages do not come from a `url`; they
         //    // come from a `hash`. `url` is just one of many possible mirrors for how to
         //    // obtain a package matching this `hash`.
-        //    //
         //    // Uses the [multihash](https://multiformats.io/multihash/) format.
         //    .hash = "...",
-        //
-        //    // When this is provided, the package is found in a directory relative to the
-        //    // build root. In this case the package's hash is irrelevant and therefore not
-        //    // computed. This field and `url` are mutually exclusive.
-        //    .path = "foo",
-
-        //    // When this is set to `true`, a package is declared to be lazily
-        //    // fetched. This makes the dependency only get fetched if it is
-        //    // actually used.
         //    .lazy = false,
-        //},
         .cli = .{
-            .url = "git+https://github.com/Hejsil/zig-clap/#f0a281ffe91fb64f116dcb04c34cecef70e8c79c",
-            .hash = "122026b67ce2974e3b2fcfd3e2e164b73ee60c55d13f3f60ca7db6c316c8f22a6bf8",
+            .url = "git+https://github.com/Hejsil/zig-clap#release-0.9.1",
+            .hash = "122062d301a203d003547b414237229b09a7980095061697349f8bef41be9c30266b",
             .lazy = false,
         },
     },

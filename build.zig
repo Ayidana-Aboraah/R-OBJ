@@ -5,14 +5,11 @@ pub fn build(b: *std.Build) void {
 
     const optimize = b.standardOptimizeOption(.{});
 
-    const cli = b.dependency("cli", .{
-        .target = target,
-        .optimize = optimize,
-    });
+    const cli = b.dependency("cli", .{});
 
     const exe = b.addExecutable(.{
         .name = "R-CLI",
-        .root_source_file = b.path("src/cli.zig"),
+        .root_source_file = b.path("src/cli/cli.zig"),
         .target = target,
         .optimize = optimize,
     });
