@@ -8,8 +8,11 @@ pub fn main() !void {
 
     const params = comptime cli.parseParamsComptime(
         \\-h, --help    Display this and exit
-        \\-n, --number <usize> BBUB
-        \\-s, --string <str>... ABABA
+        \\-c, --convert <str>...Converts the file(s) 
+        \\-i, --individually Converts the files individually instead of through shared information (can only be used with -c)
+        \\-m, --multithread Makes the conversion multithread and can only be used for reversion and or multiple individual conversions
+        \\-r, --revert Reverts the file(s)
+        \\-v, --version Output Version information
         \\<str>...
         \\
     );
@@ -21,11 +24,11 @@ pub fn main() !void {
         .allocator = gpa.allocator(),
     }) catch |err| {
         diag.report(std.io.getStdErr().writer(), err) catch {};
-        return err;
+        return;
     };
     defer res.deinit();
 
-    if (res.args.help != 0) std.debug.print("--help\n", .{});
+    if (res.args.help != 0) try cli.usage(std.io.getStdErr().writer(), cli.Help, &params);
     if (res.args.number) |n| std.debug.print("--number = {}\n", .{n});
     for (res.args.string) |s| std.debug.print("--string = {s}\n", .{s});
     for (res.positionals) |pos| std.debug.print("{s}\n", .{pos});
